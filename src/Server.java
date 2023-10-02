@@ -3,41 +3,61 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
 
 public class Server implements Serializable {
     public static void main(String[] args) throws Exception {
 		ServerSocket welcomeSocket = new ServerSocket(6789);
         try{
             while(true){
-                Socket connectionSocket = welcomeSocket.accept();
-                //System.out.println("Connection established");
-        
-                ObjectInputStream inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
-                //System.out.println("In from Client created......");
-        
-                ObjectOutputStream outToClient = new ObjectOutputStream(
-                            connectionSocket.getOutputStream());
-               // System.out.println("Out To Client created.....");
-        
-                long[] timestamps = new long[]{(long)inFromClient.readObject(), System.currentTimeMillis()};
-                //Instant t2 = Instant.now();
-        
-                //Instant timestamps[] = new Instant[2];
-                //timestamps[0] = t1;
-                //timestamps[1] = Instant.now();
-        
-                outToClient.writeObject(new long[]{timestamps[0],timestamps[1], System.currentTimeMillis()}); 
-                outToClient.flush();
-        
-                outToClient.close();
-                inFromClient.close();
-                connectionSocket.close();
+                new ClientHandler(welcomeSocket.accept()).start();
             }
             
+        }
+        catch(IOException e) {
+            e.printStackTrace();
         }
         finally{
             welcomeSocket.close();
         }
             
     }
-}
+
+    private static class ClientHandler extends Thread {
+        private Socket connectionSocket;
+        private ObjectInputStream inFromClient;
+        private ObjectOutputStream outToClient; 
+        private long[] timestamps;
+
+        public ClientHandler(Socket socket) {
+            this.connectionSocket = socket;
+            try{
+                inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
+                outToClient = new ObjectOutputStream(
+                            connectionSocket.getOutputStream());
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void run() {
+            try{
+                timestamps = new long[]{(long)inFromClient.readObject(), System.currentTimeMillis()};
+                outToClient.writeObject(new long[]{timestamps[0],timestamps[1], System.currentTimeMillis()});
+                outToClient.flush();
+                outToClient.close();
+                inFromClient.close();
+                connectionSocket.close();
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+            catch(ClassNotFoundException e2) {
+                e2.printStackTrace();
+            }
+
+        }
+    }
+}    
+
