@@ -3,7 +3,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
-public class Client implements Serializable{
+public class TSClient implements Serializable{
     private static long synchronizedTime;
 
     private static long calculateOffset(long t1, long t2, long t3, long t4, long currentTimeMillis){
@@ -37,13 +37,13 @@ public class Client implements Serializable{
         long t3 = timestamps[0][2];
         long t4 = timestamps[1][0];
 
-        // outToServer.close();
-        // inFromServer.close();
+        outToServer.close();
+        inFromServer.close();
         long currentTimeMillis = System.currentTimeMillis();
         synchronizedTime = calculateOffset(t1, t2, t3, t4, currentTimeMillis);
         System.out.println("REMOTE_TIME "+ synchronizedTime);
         System.out.println("LOCAL_TIME "+ currentTimeMillis);
         System.out.println("RTT_ESTIMATE "+ calculateDelay(t1, t2, t3, t4));
-        // clientSocket.close();
+        clientSocket.close();
     }
 }

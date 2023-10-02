@@ -1,12 +1,11 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.*;
-import java.net.*;
 
-public class Server implements Serializable {
+public class TSServer implements Serializable {
     public static void main(String[] args) throws Exception {
 		ServerSocket welcomeSocket = new ServerSocket(14886);
         System.out.println("Server started. Accepting Connections");
