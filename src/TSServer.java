@@ -9,9 +9,11 @@ import java.net.*;
 public class Server implements Serializable {
     public static void main(String[] args) throws Exception {
 		ServerSocket welcomeSocket = new ServerSocket(14886);
+        System.out.println("Server started. Accepting Connections");
         try{
             while(true){
                 new ClientHandler(welcomeSocket.accept()).start();
+                System.out.println("Client Connected");
             }
             
         }

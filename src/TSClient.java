@@ -13,7 +13,13 @@ public class Client implements Serializable{
         return (t4-t1) - (t3-t2);
     }
     public static void main(String[] args) throws Exception {
-        String hostip = args[0];
+        String hostip;
+        if(args.length == 0) {
+            hostip = "localhost";
+        }
+        else {
+            hostip = args[0];
+        }
 		Socket clientSocket = new Socket(hostip, 14886);
         //System.out.println("Socket created.....");
 		ObjectOutputStream outToServer = new ObjectOutputStream(
@@ -31,13 +37,13 @@ public class Client implements Serializable{
         long t3 = timestamps[0][2];
         long t4 = timestamps[1][0];
 
-        outToServer.close();
-        inFromServer.close();
+        // outToServer.close();
+        // inFromServer.close();
         long currentTimeMillis = System.currentTimeMillis();
         synchronizedTime = calculateOffset(t1, t2, t3, t4, currentTimeMillis);
         System.out.println("REMOTE_TIME "+ synchronizedTime);
         System.out.println("LOCAL_TIME "+ currentTimeMillis);
         System.out.println("RTT_ESTIMATE "+ calculateDelay(t1, t2, t3, t4));
-        clientSocket.close();
+        // clientSocket.close();
     }
 }
