@@ -13,7 +13,8 @@ public class Client implements Serializable{
         return (t4-t1) - (t3-t2);
     }
     public static void main(String[] args) throws Exception {
-		Socket clientSocket = new Socket("localhost", 6789);
+        String hostip = args[0];
+		Socket clientSocket = new Socket(hostip, 14886);
         //System.out.println("Socket created.....");
 		ObjectOutputStream outToServer = new ObjectOutputStream(
 				clientSocket.getOutputStream());
